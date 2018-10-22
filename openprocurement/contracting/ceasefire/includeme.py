@@ -5,6 +5,8 @@ from openprocurement.contracting.core.interfaces import (
     IContractManager,
     IMilestoneManager,
 )
+from openprocurement.contracting.core.utils import add_related_processes_views
+from openprocurement.contracting.core.traversal import factory
 from openprocurement.contracting.ceasefire.adapters.contract_manager import (
     CeasefireContractManager,
 )
@@ -18,7 +20,8 @@ from openprocurement.contracting.ceasefire.models import (
 )
 from openprocurement.contracting.ceasefire.constants import (
     CONTRACT_DEFAULT_TYPE,
-    DEFAULT_LEVEL_OF_ACCREDITATION
+    DEFAULT_LEVEL_OF_ACCREDITATION,
+    ENDPOINTS,
 )
 
 
@@ -49,3 +52,5 @@ def includeme(config, plugin_config=None):
         config.registry.accreditation['contract'][Contract._internal_type] = DEFAULT_LEVEL_OF_ACCREDITATION
     else:
         config.registry.accreditation['contract'][Contract._internal_type] = plugin_config['accreditation']
+    ## Add related processes
+    add_related_processes_views(config, ENDPOINTS['contracts'], factory)

@@ -47,6 +47,7 @@ CONTRACT_ROLES = {
             'contractType',
             'suppliers',
             'merchandisingObject',
+            'relatedProcesses',
         ),
     'view':
         whitelist(
@@ -69,6 +70,7 @@ CONTRACT_ROLES = {
             'milestones',
             'milestones',
             'procuringEntity',
+            'relatedProcesses',
             'status',
             'title',
             'title_en',

@@ -5,6 +5,7 @@ from zope.interface import implementer, Interface
 from schematics.types.compound import (
     ModelType,
 )
+from pyramid.security import Allow
 
 from openprocurement.api.constants import (
     SANDBOX_MODE,
@@ -25,6 +26,7 @@ from openprocurement.api.models.schematics_extender import (
 )
 from openprocurement.contracting.core.models import (
     Contract as BaseContract,
+    RelatedProcess,
 )
 from openprocurement.contracting.ceasefire import constants
 
@@ -94,10 +96,30 @@ class Contract(BaseContract):
     status = StringType(choices=constants.CONTRACT_STATUSES, default=constants.DEFAULT_CONTRACT_STATUS)
     type_ = StringType(serialized_name='type')
     merchandisingObject = StringType(required=True)  # id of related lot
+    relatedProcesses = ListType(ModelType(RelatedProcess), default=list())
 
     _internal_type = 'ceasefire'
     if SANDBOX_MODE:
         sandbox_parameters = StringType()
+
+    def __local_roles__(self):
+        return dict([('{}_{}'.format(self.owner, self.owner_token), 'contract_owner')])
+
+    def __acl__(self):
+        acl = [
+            (Allow, '{}_{}'.format(self.owner, self.owner_token), 'edit_contract'),
+            (Allow, '{}_{}'.format(self.owner, self.owner_token), 'upload_contract_documents'),
+            (Allow, '{}_{}'.format(self.owner, self.owner_token), 'create_related_process'),
+            (Allow, '{}_{}'.format(self.owner, self.owner_token), 'edit_related_process'),
+            (Allow, '{}_{}'.format(self.owner, self.owner_token), 'delete_related_process'),
+            (Allow, 'g:caravan', 'create_related_process'),
+            (Allow, 'g:caravan', 'edit_related_process'),
+            (Allow, 'g:caravan', 'delete_related_process'),
+            (Allow, 'g:convoy', 'create_related_process'),
+            (Allow, 'g:convoy', 'edit_related_process'),
+            (Allow, 'g:convoy', 'delete_related_process'),
+        ]
+        return acl
 
     def get_role(self):
         root = self.__parent__
