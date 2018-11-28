@@ -1,0 +1,352 @@
+{
+   "merchandisingObject": "a930574bf8cd999cb7f9c9ed4ca68061",
+   "period": {
+       "startDate": "2018-11-28T17:25:53.731786+02:00",
+       "endDate": "2018-12-28T17:25:53.731792+02:00"
+   },
+   "procuringEntity": {
+       "additionalContactPoints": [
+           {
+               "name": "Державне управління справами",
+               "telephone": "0440000000"
+           }
+       ],
+       "contactPoint": {
+           "name": "Державне управління справами",
+           "telephone": "0440000000"
+       },
+       "identifier": {
+           "scheme": "UA-EDR",
+           "id": "00037256",
+           "uri": "http://www.dus.gov.ua/"
+       },
+       "name": "Державне управління справами",
+       "address": {
+           "postalCode": "01220",
+           "countryName": "Україна",
+           "streetAddress": "вул. Банкова, 11, корпус 1",
+           "region": "м. Київ",
+           "locality": "м. Київ"
+       }
+   },
+   "owner": "broker5",
+   "id": "239fcef34d96425d99b4882ea53059ad",
+   "revisions": [
+       {
+           "date": "2018-11-28T17:25:56.027346+02:00",
+           "changes": [
+               {
+                   "path": "/status",
+                   "op": "remove"
+               },
+               {
+                   "path": "/transfer_token",
+                   "op": "remove"
+               },
+               {
+                   "path": "/merchandisingObject",
+                   "op": "remove"
+               },
+               {
+                   "path": "/title",
+                   "op": "remove"
+               },
+               {
+                   "path": "/items",
+                   "op": "remove"
+               },
+               {
+                   "path": "/suppliers",
+                   "op": "remove"
+               },
+               {
+                   "path": "/period",
+                   "op": "remove"
+               },
+               {
+                   "path": "/value",
+                   "op": "remove"
+               },
+               {
+                   "path": "/procuringEntity",
+                   "op": "remove"
+               },
+               {
+                   "path": "/owner_token",
+                   "op": "remove"
+               },
+               {
+                   "path": "/dateSigned",
+                   "op": "remove"
+               },
+               {
+                   "path": "/owner",
+                   "op": "remove"
+               },
+               {
+                   "path": "/contractType",
+                   "op": "remove"
+               },
+               {
+                   "path": "/awardID",
+                   "op": "remove"
+               },
+               {
+                   "path": "/id",
+                   "op": "remove"
+               },
+               {
+                   "path": "/contractID",
+                   "op": "remove"
+               }
+           ],
+           "author": "broker5"
+       },
+       {
+           "date": "2018-11-28T17:25:56.064069+02:00",
+           "rev": "1-c97f90944b15599912e6fcd68b57e02b",
+           "changes": [
+               {
+                   "path": "/status",
+                   "value": "active.confirmation",
+                   "op": "replace"
+               },
+               {
+                   "path": "/milestones",
+                   "op": "remove"
+               }
+           ],
+           "author": "broker5"
+       },
+       {
+           "date": "2018-11-28T17:25:56.094076+02:00",
+           "rev": "2-1909ebd81a7551095204d01831824ba9",
+           "changes": [
+               {
+                   "path": "/documents",
+                   "op": "remove"
+               }
+           ],
+           "author": "broker5"
+       },
+       {
+           "date": "2018-11-28T17:25:56.120254+02:00",
+           "rev": "3-0626440bbc09c3678ff89c88f2daae58",
+           "changes": [
+               {
+                   "path": "/documents/1",
+                   "op": "remove"
+               }
+           ],
+           "author": "broker5"
+       },
+       {
+           "date": "2018-11-28T17:25:56.150950+02:00",
+           "rev": "4-55c4721f4a3785c2437aad4298c76536",
+           "changes": [
+               {
+                   "path": "/documents/2",
+                   "op": "remove"
+               }
+           ],
+           "author": "broker5"
+       },
+       {
+           "date": "2018-11-28T17:25:56.180771+02:00",
+           "rev": "5-e0b92498f87eba9446f3af931d6cff89",
+           "changes": [
+               {
+                   "path": "/status",
+                   "op": "remove"
+               },
+               {
+                   "path": "/documents",
+                   "op": "remove"
+               },
+               {
+                   "path": "/transfer_token",
+                   "op": "remove"
+               },
+               {
+                   "path": "/merchandisingObject",
+                   "op": "remove"
+               },
+               {
+                   "path": "/title",
+                   "op": "remove"
+               },
+               {
+                   "path": "/items",
+                   "op": "remove"
+               },
+               {
+                   "path": "/suppliers",
+                   "op": "remove"
+               },
+               {
+                   "path": "/period",
+                   "op": "remove"
+               },
+               {
+                   "path": "/value",
+                   "op": "remove"
+               },
+               {
+                   "path": "/procuringEntity",
+                   "op": "remove"
+               },
+               {
+                   "path": "/milestones",
+                   "op": "remove"
+               },
+               {
+                   "path": "/owner_token",
+                   "op": "remove"
+               },
+               {
+                   "path": "/dateSigned",
+                   "op": "remove"
+               },
+               {
+                   "path": "/owner",
+                   "op": "remove"
+               },
+               {
+                   "path": "/contractType",
+                   "op": "remove"
+               },
+               {
+                   "path": "/awardID",
+                   "op": "remove"
+               },
+               {
+                   "path": "/id",
+                   "op": "remove"
+               },
+               {
+                   "path": "/contractID",
+                   "op": "remove"
+               }
+           ],
+           "author": "broker5"
+       }
+   ],
+   "documents": [
+       {
+           "hash": "md5:00000000000000000000000000000000",
+           "format": "application/msword",
+           "url": "http://localhost/get/7146dee5c6014fe69a5d93176fb6f06f?KeyID=172d32c8&Signature=4f0CdS8nhNYddo%252Bvqom74nOrNlD6XXGzT8yDgsBQRAPm%252Be1donnmAIhKC9LHCtFxRZYhX6TD6rynJ5Kta1DFCw%253D%253D",
+           "title": "укр.doc",
+           "documentOf": "milestone",
+           "datePublished": "2018-11-28T17:25:56.091244+02:00",
+           "dateModified": "2018-11-28T17:25:56.091269+02:00",
+           "relatedItem": "a1b53360d7834ab088fbc269ff1e20ca",
+           "id": "4ece23104b2b42348a010b29667d24e8"
+       },
+       {
+           "hash": "md5:00000000000000000000000000000000",
+           "format": "application/msword",
+           "url": "http://localhost/get/ad86821c076b4e4c839ba974db3eef05?KeyID=172d32c8&Signature=aHwY1%2FjJhr%252BKhek6mi0MfQNsW2QKVknq2oDY%252BME6kdiPi1Rl3wfGPAXIlapt43q00yZ9usjh%2FvTJXZ529K4KAA%253D%253D",
+           "title": "укр.doc",
+           "documentOf": "milestone",
+           "datePublished": "2018-11-28T17:25:56.118565+02:00",
+           "dateModified": "2018-11-28T17:25:56.118582+02:00",
+           "relatedItem": "2d7ff3914b824e5ca768f183a9d70ad0",
+           "id": "1597528d79b345ad9624189a7a3080c4"
+       },
+       {
+           "hash": "md5:00000000000000000000000000000000",
+           "format": "application/msword",
+           "url": "http://localhost/get/26dcf2b4b4cf40c1a13d38689aa2fc3b?KeyID=172d32c8&Signature=8o0sdj%2F7LUqviP3DRoyEH2rlnEisGKmPBG6ui%2F81SAPrT%252BDJ9uMtY08ewQxzpqXU8n4LrFeYrWu2JLDyjkT4Cg%253D%253D",
+           "title": "укр.doc",
+           "documentOf": "milestone",
+           "datePublished": "2018-11-28T17:25:56.149061+02:00",
+           "dateModified": "2018-11-28T17:25:56.149077+02:00",
+           "relatedItem": "9df33bbdf79c4e89a5eba4da2d5dbb38",
+           "id": "85b878a1351c41c9a63f0ad2f1260489"
+       }
+   ],
+   "transfer_token": "6a611726cc27dbe8f0ee2c79b46aa5efea153dd3211e690ee8f0d35b8b3e1bc7da4030eaa88d25c78d6bd0e33c1fa5bc92cfb93857c4554d72dc83e991b283f3",
+   "title": "Test Contract",
+   "owner_token": "cc1f8f598a1d4d2ab755069d3e7515ae",
+   "dateModified": "2018-11-28T17:25:56.180886+02:00",
+   "status": "active.approval",
+   "dateSigned": "2018-11-28T17:25:53.731761+02:00",
+   "milestones": [
+       {
+           "status": "partiallyMet",
+           "dateModified": "2018-11-28T17:25:56.178728+02:00",
+           "id": "a1b53360d7834ab088fbc269ff1e20ca",
+           "dateMet": "2019-02-02T18:00:00+02:00",
+           "type": "financing",
+           "dueDate": "2019-01-28T18:00:00+02:00"
+       },
+       {
+           "status": "processing",
+           "type": "approval",
+           "id": "2d7ff3914b824e5ca768f183a9d70ad0",
+           "dueDate": "2019-02-22T18:00:00+02:00"
+       },
+       {
+           "status": "scheduled",
+           "type": "reporting",
+           "id": "9df33bbdf79c4e89a5eba4da2d5dbb38"
+       }
+   ],
+   "contractType": "ceasefire",
+   "doc_type": "Contract",
+   "items": [
+       {
+           "registrationDetails": {
+               "status": "unknown"
+           },
+           "description": "Земля для військовослужбовців",
+           "classification": {
+               "scheme": "CPV",
+               "description": "Земельні ділянки",
+               "id": "66113000-5"
+           },
+           "address": {
+               "postalCode": "79000",
+               "countryName": "Україна",
+               "streetAddress": "вул. Банкова 1",
+               "region": "м. Київ",
+               "locality": "м. Київ"
+           },
+           "id": "d05b473d781149078364f8c938015688",
+           "unit": {
+               "code": "44617100-9",
+               "name": "item"
+           },
+           "quantity": 5
+       }
+   ],
+   "suppliers": [
+       {
+           "contactPoint": {
+               "name": "Державне управління справами",
+               "telephone": "0440000000"
+           },
+           "identifier": {
+               "scheme": "UA-EDR",
+               "id": "00037256",
+               "uri": "http://www.dus.gov.ua/"
+           },
+           "name": "Державне управління справами",
+           "address": {
+               "postalCode": "01220",
+               "countryName": "Україна",
+               "streetAddress": "вул. Банкова, 11, корпус 1",
+               "region": "м. Київ",
+               "locality": "м. Київ"
+           }
+       }
+   ],
+   "value": {
+       "currency": "UAH",
+       "amount": 500,
+       "valueAddedTaxIncluded": true
+   },
+   "awardID": "376d560b2b2d452a80543865f3cab43e",
+   "contractID": "a930574bf8cd405cb7f9c9ed4ca68061"
+}

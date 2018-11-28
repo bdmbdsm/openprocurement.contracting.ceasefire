@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from datetime import timedelta
 # Endpoints
 ENDPOINTS = {
@@ -62,5 +63,10 @@ MILESTONE_TERMINAL_STATUSES = (
     'notMet',
 )
 
-DEFAULT_LEVEL_OF_ACCREDITATION = {'create': [5],
-                                  'edit': [6]}
+DEFAULT_LEVEL_OF_ACCREDITATION = {
+    'create': [5],
+    'edit': [6],
+}
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SNAPSHOTS_DIR = os.path.join(BASE_DIR, 'tests', 'fixtures', 'snapshots')
