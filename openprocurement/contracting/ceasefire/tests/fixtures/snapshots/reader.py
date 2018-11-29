@@ -4,7 +4,7 @@ import json
 
 from openprocurement.contracting.ceasefire.constants import SNAPSHOTS_DIR
 
-def read_snapshot(snapshot_filename):
+def get_snapshot(snapshot_filename):
     """Read adjacent file & deserialize it"""
     full_filename = os.path.join(SNAPSHOTS_DIR, snapshot_filename)
     with open(full_filename, 'r') as f:
