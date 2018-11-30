@@ -20,7 +20,17 @@ class RelatedProcessesMigrationStep(BaseMigrationStep):
         self.view = 'contracts/all'
 
     def migrate_document(self, contract):
-        pass
+        if self._skip_predicate(contract):
+            return
+        merch_obj = contract['merchandisingObject']
+        del contract['merchandisingObject']
+
+        return contract
+
+    def _skip_predicate(self, contract):
+        if 'merchandisingObject' in contract.keys():
+            return False
+        return True
 
 MIGRATION_STEPS = (
     RelatedProcessesMigrationStep,

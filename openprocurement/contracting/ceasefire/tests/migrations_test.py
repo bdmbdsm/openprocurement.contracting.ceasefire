@@ -37,3 +37,9 @@ class RelatedProcessesMigrationTestCase(BaseWebTest):
         rp = search_list_with_dicts(rps, 'relatedProcessID', self.merchandisingObject)
         self.assertIsNotNone(rp, 'relatedProcessID must be initialized')
         self.assertEqual(rp['type'], 'lot')
+
+    def test_skip_migrated(self):
+        self.fail('Write the test')
+
+    def tearDown(self):
+        del self.db[self.contract_id]
