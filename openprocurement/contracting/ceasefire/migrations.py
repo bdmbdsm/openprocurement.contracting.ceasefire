@@ -37,9 +37,9 @@ class RelatedProcessesMigrationStep(BaseMigrationStep):
         return contract
 
     def _skip_predicate(self, contract):
-        if 'merchandisingObject' in contract.keys():
-            return False
-        return True
+        if not 'merchandisingObject' in contract.keys():
+            return True
+        return False
 
 MIGRATION_STEPS = (
     RelatedProcessesMigrationStep,
