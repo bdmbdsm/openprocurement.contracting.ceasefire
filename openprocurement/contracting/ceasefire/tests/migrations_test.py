@@ -32,7 +32,7 @@ class RelatedProcessesMigrationTestCase(BaseWebTest):
         self.run_migration = run_migration
 
     def test_ok(self):
-        """Turn merchandisingObject into relatedProcess"""
+        """Copy RPs from the related auction and create auction RP"""
 
         self.run_migration()
         
