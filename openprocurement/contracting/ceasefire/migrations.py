@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from uuid import uuid4
+
 from openprocurement.contracting.core.traversal import Root
 from openprocurement.contracting.core.migration import (
     BaseMigrationsRunner,
@@ -24,6 +26,13 @@ class RelatedProcessesMigrationStep(BaseMigrationStep):
             return
         merch_obj = contract['merchandisingObject']
         del contract['merchandisingObject']
+
+        new_rp_lot = {
+            'id': uuid4().hex,
+            'relatedProcessID': merch_obj,
+            'type': 'lot',
+        }
+        contract['relatedProcesses'] = (new_rp_lot,)
 
         return contract
 

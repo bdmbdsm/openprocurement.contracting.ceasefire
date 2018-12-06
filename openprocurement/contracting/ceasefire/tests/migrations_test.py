@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
 
+from openprocurement.contracting.core.traversal import Root 
 from openprocurement.contracting.ceasefire.tests.fixtures.snapshots import get_snapshot
 from openprocurement.contracting.ceasefire.tests.base import (
     BaseWebTest
@@ -20,7 +21,7 @@ class RelatedProcessesMigrationTestCase(BaseWebTest):
         auction_fixture = get_snapshot('contract_with_merchandising_object.json')
         self.merchandisingObject = auction_fixture['merchandisingObject']
         self.contract_id = self.db.save(auction_fixture)[0]
-        self.runner = CeasefireMigrationsRunner(self.app.app.registry)
+        self.runner = CeasefireMigrationsRunner(self.app.app.registry, Root)
 
     def test_ok(self):
         """Turn merchandisingObject into relatedProcess"""
