@@ -12,7 +12,6 @@ class CeasefireMigrationsRunner(BaseMigrationsRunner):
 
     SCHEMA_VERSION = 1
     SCHEMA_DOC = 'openprocurement_contracting_ceasefire_schema_version'
-    ROOT_CLASS = Root
 
 
 class RelatedProcessesMigrationStep(BaseMigrationStep):

@@ -2,7 +2,6 @@
 from unittest import TestCase
 from uuid import uuid4
 
-from openprocurement.contracting.core.traversal import Root 
 from openprocurement.contracting.ceasefire.tests.fixtures.snapshots import get_snapshot
 from openprocurement.contracting.ceasefire.tests.base import (
     BaseWebTest
@@ -23,11 +22,11 @@ class RelatedProcessesMigrationTestCase(BaseWebTest):
         self.merchandisingObject = auction_fixture['merchandisingObject']
         self.contract_id = self.db.save(auction_fixture)[0]
 
-        runner = CeasefireMigrationsRunner(self.app.app.registry, Root)
+        runner = CeasefireMigrationsRunner(self.db)
         steps = (RelatedProcessesMigrationStep,)
 
         def run_migration():
-            runner.migrate(steps, schema_version_max=1, check_plugins=False)
+            runner.migrate(steps, schema_version_max=1)
 
         self.run_migration = run_migration
 
