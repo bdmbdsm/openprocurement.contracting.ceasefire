@@ -2,7 +2,7 @@
 from unittest import TestCase
 from uuid import uuid4
 
-from openprocurement.contracting.ceasefire.tests.fixtures.snapshots import get_snapshot
+from openprocurement.contracting.ceasefire.tests.base import get_snapshot
 from openprocurement.contracting.ceasefire.tests.base import (
     BaseWebTest
 )
