@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from pyramid.threadlocal import get_current_registry
+
 from openprocurement.api.utils import (
     APIResource,
     context_unpack,
@@ -18,6 +20,7 @@ from openprocurement.contracting.core.validation import (
 from openprocurement.contracting.core.interfaces import (
     IContractManager,
 )
+from openprocurement.api.utils.validation import validate_data_to_event
 
 
 @contractingresource(
@@ -33,11 +36,12 @@ class CeasefireContractResource(APIResource):
 
     @json_view(
         permission='edit_contract',
-        validators=(validate_patch_contract_data,)
+        validators=(validate_data_to_event,)
     )
     def patch(self):
-        manager = self.request.registry.getAdapter(self.request.context, IContractManager)
-        manager.change_contract(self.request)
+        import ipdb; ipdb.set_trace()
+        manager = get_current_registry().getAdapter(self.request.context, IContractManager)
+        manager.change_contract(self.request.event)
         if apply_patch(self.request):
             self.LOGGER.info(
                 'Updated ceasefire contract. Status: {0}, id: {1}'.format(

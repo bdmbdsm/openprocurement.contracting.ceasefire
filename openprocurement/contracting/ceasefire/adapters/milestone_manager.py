@@ -45,8 +45,7 @@ class CeasefireMilestoneManager(object):
     def __init__(self, context):
         self.context = context
 
-    def create_milestones(self, request):
-        contract = request.validated['contract']
+    def create_milestones(self, contract):
         contract.milestones = self.populate_milestones(contract)
 
     @validate_with(change_validators)
