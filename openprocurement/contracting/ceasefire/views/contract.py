@@ -39,7 +39,6 @@ class CeasefireContractResource(APIResource):
         validators=(validate_data_to_event,)
     )
     def patch(self):
-        import ipdb; ipdb.set_trace()
         manager = get_current_registry().getAdapter(self.request.context, IContractManager)
         manager.change_contract(self.request.event)
         if apply_patch(self.request):
