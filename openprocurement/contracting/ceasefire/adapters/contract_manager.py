@@ -2,7 +2,7 @@
 from zope.interface import implementer
 
 from openprocurement.api.utils import validate_with
-from openprocurement.api.utils.data_engine import DataEngine
+from openprocurement.api.utils.data_engine import DataValidationEngine, DataPersistenceEngine
 from openprocurement.contracting.core.interfaces import (
     IContractManager,
 )
