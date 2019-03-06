@@ -20,7 +20,8 @@ from openprocurement.contracting.ceasefire.adapters.document_manager import (
 @implementer(IContractManager)
 class CeasefireContractManager(object):
 
-    _engine_cls = DataEngine
+    _validation_engine_cls = DataValidationEngine
+    _persistence_engine_cls = DataPersistenceEngine
 
     def __init__(self, context):
         self.context = context
@@ -35,7 +36,7 @@ class CeasefireContractManager(object):
 
     @validate_with(change_validators)
     def change_contract(self, event):
-        updated_contract = self._engine_cls(event).apply_data_on_model()
+        updated_contract = self._validation_engine_cls(event).apply_data_on_model()
         new_status = updated_contract.get('status')
         if new_status == 'active.payment':
             milestone_manager = CeasefireMilestoneManager(event.context)
