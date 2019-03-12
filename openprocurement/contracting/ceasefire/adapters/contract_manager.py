@@ -2,7 +2,7 @@
 from zope.interface import implementer
 
 from openprocurement.api.utils import validate_with
-from openprocurement.api.utils.data_engine import DataValidationEngine, DataPersistenceEngine
+from openprocurement.api.utils.data_engine import DataEngine
 from openprocurement.contracting.core.interfaces import (
     IContractManager,
 )
@@ -20,8 +20,7 @@ from openprocurement.contracting.ceasefire.adapters.document_manager import (
 @implementer(IContractManager)
 class CeasefireContractManager(object):
 
-    _validation_engine_cls = DataValidationEngine
-    _persistence_engine_cls = DataPersistenceEngine
+    _data_engine_cls = DataEngine
 
     def __init__(self, context):
         self.context = context
@@ -31,13 +30,18 @@ class CeasefireContractManager(object):
         pass
 
     change_validators = (
-        # validate_allowed_contract_statuses,
+        # validate_allowed_contract_statuses, # TODO: move to BL
     )
 
     @validate_with(change_validators)
     def change_contract(self, event):
-        updated_contract = self._validation_engine_cls(event).apply_data_on_model()
-        new_status = updated_contract.get('status')
+        data_engine = self._data_engine_cls(event)
+
+        data_engine.apply_data_on_context()
+        contract_upd = event.ctx.cache['l_ctx_updated_model']
+        contract = event.ctx.l_ctx.ctx
+        new_status = contract_upd.get('status')
         if new_status == 'active.payment':
-            milestone_manager = CeasefireMilestoneManager(event.context)
-            milestone_manager.create_milestones(updated_contract)
+            milestone_manager = CeasefireMilestoneManager(contract)
+            milestone_manager.create_milestones(contract)
+        applied = data_engine.update()
