@@ -45,3 +45,5 @@ class CeasefireContractManager(object):
             milestone_manager = CeasefireMilestoneManager(contract)
             milestone_manager.create_milestones(contract)
         applied = data_engine.update()
+
+        return applied
