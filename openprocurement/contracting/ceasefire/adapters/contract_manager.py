@@ -22,12 +22,15 @@ class CeasefireContractManager(object):
 
     _data_engine_cls = DataEngine
 
-    def __init__(self, context):
-        self.context = context
+    def __init__(self, event):
+        self.event = event
         self.document_manager = CeasefireContractDocumentManager
 
-    def create_contract(self, event):
-        pass
+    def create_contract(self):
+        for i in self.event.data.get('documents', []):
+            doc = type(contract).documents.model_class(i)
+            doc.__parent__ = contract
+            contract.documents.append(doc)
 
     change_validators = (
         # validate_allowed_contract_statuses, # TODO: move to BL
