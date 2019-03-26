@@ -19,6 +19,8 @@ from openprocurement.contracting.ceasefire.constants import (
 from openprocurement.contracting.ceasefire.validators import (
     validate_patch_milestone_data,
 )
+from openprocurement.api.utils.validation import validate_data_to_event
+from openprocurement.contracting.core.manager_discovery import ContractManagerDiscovery
 
 
 @contractingresource(
@@ -36,10 +38,14 @@ class CeasefireMilestoneResource(APIResource):
     @json_view(
         permission='edit_contract',
         content_type='application/json',
-        validators=(validate_patch_milestone_data,))
+        validators=(validate_data_to_event,))
     def patch(self):
-        manager = self.request.registry.getAdapter(self.request.context, IMilestoneManager)
-        manager.change_milestone(self.request)
+        import ipdb; ipdb.set_trace()
+        event = self.request.event
+        md = ContractManagerDiscovery(self.request.registry.manager_registry)
+        contract_manager = md.discover(event.ctx.high)
+        manager = contract_manager.milestone_manager(event)
+        res = manager.change_milestone()
         self.request.context.dateModified = datetime.now()
         if apply_patch(self.request):
             self.LOGGER.info(

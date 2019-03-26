@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 from zope.interface import implementer
 
-from openprocurement.api.utils import validate_with
 from openprocurement.api.utils.data_engine import DataEngine
 from openprocurement.api.utils.ownership import OwnershipOperator
 from openprocurement.contracting.core.interfaces import (
     IContractManager,
 )
-from openprocurement.contracting.ceasefire.validators import (
-    validate_allowed_contract_statuses,
-)
+from openprocurement.contracting.core.utils import save_contract
 from openprocurement.contracting.ceasefire.adapters.milestone_manager import (
     CeasefireMilestoneManager,
 )
@@ -17,50 +14,58 @@ from openprocurement.contracting.ceasefire.adapters.document_manager import (
     CeasefireContractDocumentManager,
 )
 from openprocurement.contracting.ceasefire.models.schema import Contract
+from openprocurement.contracting.ceasefire.predicates import allowed_contract_status_changes
 
 
 @implementer(IContractManager)
 class CeasefireContractManager(object):
 
     _data_engine_cls = DataEngine
+    milestone_manager = CeasefireMilestoneManager
+    document_manager = CeasefireContractDocumentManager
 
-    def __init__(self, event):
-        self.event = event
-        self.document_manager = CeasefireContractDocumentManager
-        self.data_engine = self._data_engine_cls(event)
-
-    def create_contract(self):
-        contract = self.data_engine.create_model(Contract)
-        self._add_documents_to_contract(contract)
+    def create_contract(self, event):
+        de = self._data_engine_cls(event)
+        contract = de.create_model(Contract)
+        self._add_documents_to_contract(contract, event.data)
 
         ownersip_operator = OwnershipOperator(contract)
-        import ipdb; ipdb.set_trace()
         acc = ownersip_operator.set_ownership(
-            self.event.auth.user_id, self.event.data.get('transfer_token')
+            event.auth.user_id, event.data.get('transfer_token')
         )
-        pass
+        saved = de.save(contract)
+        if saved:
+            # TODO log it
+            return {
+                'access': acc,
+                'data': contract.serialize('view')
+            }
 
-    def _add_documents_to_contract(self, contract):
-        for i in self.event.data.get('documents', []):
+    def _add_documents_to_contract(self, contract, data):
+        for i in data.get('documents', []):
             doc = type(contract).documents.model_class(i)
             doc.__parent__ = contract
             contract.documents.append(doc)
 
-    change_validators = (
-        # validate_allowed_contract_statuses, # TODO: move to BL
-    )
-
-    @validate_with(change_validators)
     def change_contract(self, event):
-        data_engine = self._data_engine_cls(event)
-
-        data_engine.apply_data_on_context()
-        contract_upd = event.ctx.cache['l_ctx_updated_model']
-        contract = event.ctx.l_ctx.ctx
+        # validation
+        de = self._data_engine_cls(event)
+        contract = event.ctx.high
+        new_status = event.data.get('status')
+        user_id = event.auth.user_id
+        if not allowed_contract_status_changes(contract.status, new_status, user_id):
+            return None
+            # request.errors.add('body', 'status', 'Status change is not allowed.')
+            # request.errors.status = 403
+            # raise error_handler(request)
+        # validation end
+        self.data_engine.apply_data_on_context()
+        contract_upd = event.ctx.cache.low_data_model
+        contract = event.ctx.high
         new_status = contract_upd.get('status')
         if new_status == 'active.payment':
-            milestone_manager = CeasefireMilestoneManager(contract)
+            milestone_manager = self.milestone_manager()
             milestone_manager.create_milestones(contract)
-        applied = data_engine.update()
+        self.data_engine.update()
 
-        return applied
+        return {'data': event.ctx.high.serialize('view')}

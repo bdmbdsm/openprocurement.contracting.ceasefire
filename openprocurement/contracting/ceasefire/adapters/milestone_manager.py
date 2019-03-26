@@ -12,6 +12,7 @@ from openprocurement.api.utils import (
     calculate_business_date,
     search_list_with_dicts,
 )
+from openprocurement.api.utils.data_engine import DataEngine
 from openprocurement.contracting.core.utils import (
     LOGGER,
 )
@@ -37,22 +38,29 @@ from openprocurement.contracting.ceasefire.constants import (
 @implementer(IMilestoneManager)
 class CeasefireMilestoneManager(object):
 
+    data_engine_cls = DataEngine
+
     change_validators = (
         validate_document_is_present_on_milestone_status_change,
         validate_milestone_is_not_in_terminal_status,
     )
 
-    def __init__(self, context):
-        self.context = context
+    def __init__(self, event):
+        self.event = event
 
     def create_milestones(self, contract):
         contract.milestones = self.populate_milestones(contract)
 
-    @validate_with(change_validators)
-    def change_milestone(self, request):
-        milestone = request.context
-        new_status = request.json.get('data', {}).get('status')
-        contract = milestone.__parent__
+    # @validate_with(change_validators)
+    def change_milestone(self):
+        de = data_engine_cls(self.event)
+
+        import ipdb; ipdb.set_trace()
+        milestone = self.event.ctx.low
+        new_status = self.event.data.get('status')
+        contract = self.event.ctx.high
+        de.apply_data_on_context()
+        milestone_upd = self.event.ctx.cache.low_data_model
 
         # `notMet` handling
         if new_status == 'notMet' and milestone.status == 'processing':

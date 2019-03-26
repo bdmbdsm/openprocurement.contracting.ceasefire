@@ -32,6 +32,7 @@ def includeme(config, plugin_config=None):
     manager_registry = config.registry.manager_registry
     if plugin_config.get('use_default', False):
         config.add_contract_contractType(Contract, CONTRACT_DEFAULT_TYPE)
+        manager_registry.register_manager(CONTRACT_DEFAULT_TYPE, CeasefireContractManager)
     for ct in contract_types:
         config.add_contract_contractType(Contract, ct)
         manager_registry.register_manager(ct, CeasefireContractManager)

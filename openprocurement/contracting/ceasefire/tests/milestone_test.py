@@ -59,6 +59,7 @@ class MilestoneResourceTest(BaseWebTest):
         assert financing_milestone.type_ == 'financing'
         dateMet_to_set = financing_milestone.dueDate - timedelta(days=5)
 
+        import ipdb; ipdb.set_trace()
         response = patch_milestone(
             self,
             contract,

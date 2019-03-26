@@ -21,6 +21,7 @@ from openprocurement.contracting.core.interfaces import (
     IContractManager,
 )
 from openprocurement.api.utils.validation import validate_data_to_event
+from openprocurement.contracting.core.manager_discovery import ContractManagerDiscovery
 
 
 @contractingresource(
@@ -39,17 +40,20 @@ class CeasefireContractResource(APIResource):
         validators=(validate_data_to_event,)
     )
     def patch(self):
-        manager = get_current_registry().getAdapter(self.request.context, IContractManager)
-        updated = manager.change_contract(self.request.event)
-        if updated:
-            self.LOGGER.info(
-                'Updated ceasefire contract. Status: {0}, id: {1}'.format(
-                    self.request.context.status,
-                    self.request.context.id
-                ),
-                extra=context_unpack(
-                    self.request,
-                    {'MESSAGE_ID': 'ceasefire_contract_patch'}
-                )
-            )
-        return {'data': self.request.context.serialize('view')}
+        event = self.request.event
+        md = ContractManagerDiscovery(self.request.registry.manager_registry)
+        manager = md.discover(event.ctx.high)(event)
+        return manager.change_contract()
+        ##
+        # if updated:
+        #     self.LOGGER.info(
+        #         'Updated ceasefire contract. Status: {0}, id: {1}'.format(
+        #             self.request.context.status,
+        #             self.request.context.id
+        #         ),
+        #         extra=context_unpack(
+        #             self.request,
+        #             {'MESSAGE_ID': 'ceasefire_contract_patch'}
+        #         )
+        #     )
+        # return {'data': self.request.context.serialize('view')}
