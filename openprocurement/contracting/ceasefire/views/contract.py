@@ -42,8 +42,8 @@ class CeasefireContractResource(APIResource):
     def patch(self):
         event = self.request.event
         md = ContractManagerDiscovery(self.request.registry.manager_registry)
-        manager = md.discover(event.ctx.high)(event)
-        return manager.change_contract()
+        manager = md.discover(event.ctx.high)()
+        return manager.change_contract(event)
         ##
         # if updated:
         #     self.LOGGER.info(

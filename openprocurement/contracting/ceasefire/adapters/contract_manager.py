@@ -24,16 +24,18 @@ class CeasefireContractManager(object):
     milestone_manager = CeasefireMilestoneManager
     document_manager = CeasefireContractDocumentManager
 
+    def __init__(self):
+        self.de = DataEngine()
+
     def create_contract(self, event):
-        de = self._data_engine_cls(event)
-        contract = de.create_model(Contract)
+        contract = self.de.create_model(event, Contract)
         self._add_documents_to_contract(contract, event.data)
 
         ownersip_operator = OwnershipOperator(contract)
         acc = ownersip_operator.set_ownership(
             event.auth.user_id, event.data.get('transfer_token')
         )
-        saved = de.save(contract)
+        saved = self.de.save(event, contract)
         if saved:
             # TODO log it
             return {
@@ -49,7 +51,6 @@ class CeasefireContractManager(object):
 
     def change_contract(self, event):
         # validation
-        de = self._data_engine_cls(event)
         contract = event.ctx.high
         new_status = event.data.get('status')
         user_id = event.auth.user_id
@@ -59,13 +60,11 @@ class CeasefireContractManager(object):
             # request.errors.status = 403
             # raise error_handler(request)
         # validation end
-        self.data_engine.apply_data_on_context()
-        contract_upd = event.ctx.cache.low_data_model
-        contract = event.ctx.high
+        contract_upd = self.de.apply_data_on_context(event)
         new_status = contract_upd.get('status')
         if new_status == 'active.payment':
             milestone_manager = self.milestone_manager()
             milestone_manager.create_milestones(contract)
-        self.data_engine.update()
+        self.de.update(event)
 
         return {'data': event.ctx.high.serialize('view')}

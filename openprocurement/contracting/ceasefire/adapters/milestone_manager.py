@@ -6,7 +6,6 @@ from zope.interface import implementer
 
 from openprocurement.api.utils import (
     error_handler,
-    validate_with,
 )
 from openprocurement.api.utils import (
     calculate_business_date,
@@ -23,15 +22,13 @@ from openprocurement.contracting.ceasefire.utils import (
     view_milestones_by_type,
 )
 from openprocurement.contracting.ceasefire.models import Milestone
-from openprocurement.contracting.ceasefire.validators import (
-    validate_document_is_present_on_milestone_status_change,
-    validate_milestone_is_not_in_terminal_status,
-)
 from openprocurement.contracting.ceasefire.constants import (
     MILESTONE_APPROVAL_DUEDATE_OFFSET,
     MILESTONE_FINANCING_DUEDATE_OFFSET,
     MILESTONE_REPORTING_DUEDATE_OFFSET_YEARS,
+    MILESTONE_TERMINAL_STATUSES,
     MILESTONE_TYPES,
+    MILESTONE_TYPES_REQUIRE_DOCUMENT_TO_PATCH,
 )
 
 
@@ -40,27 +37,59 @@ class CeasefireMilestoneManager(object):
 
     data_engine_cls = DataEngine
 
-    change_validators = (
-        validate_document_is_present_on_milestone_status_change,
-        validate_milestone_is_not_in_terminal_status,
-    )
-
-    def __init__(self, event):
-        self.event = event
+    def __init__(self):
+        self.de = self.data_engine_cls()
 
     def create_milestones(self, contract):
         contract.milestones = self.populate_milestones(contract)
 
-    # @validate_with(change_validators)
-    def change_milestone(self):
-        de = data_engine_cls(self.event)
-
-        import ipdb; ipdb.set_trace()
+    def change_milestone(self, event):
         milestone = self.event.ctx.low
         new_status = self.event.data.get('status')
         contract = self.event.ctx.high
-        de.apply_data_on_context()
-        milestone_upd = self.event.ctx.cache.low_data_model
+
+        milestone_upd = self.de.apply_data_on_context(event)
+        # validation 1
+        new_status = event.data.get('status')
+        new_dateMet = milestone_upd.get('dateMet')
+        current_status = milestone.status
+        current_dateMet = milestone.dateMet
+        milestone_type = milestone.type_
+
+        is_status_change = (new_status != current_status) or (new_dateMet != current_dateMet)
+        milestone_requires_document = milestone_type in MILESTONE_TYPES_REQUIRE_DOCUMENT_TO_PATCH
+
+        contract_documents = event.ctx.high.documents
+        related_document = None
+        for document in contract_documents:
+            if (
+                document.relatedItem == event.ctx.high.id
+                and document.documentOf == 'milestone'
+            ):
+                related_document = document
+                break
+
+        if is_status_change and not related_document and milestone_requires_document:
+            return
+            # request.errors.add(
+            #     'body',
+            #     'status',
+            #     'Status change could not be completed. Add a document to this milestone'
+            # )
+            # request.errors.status = 403
+            # raise error_handler(request)
+
+        # validation 2
+        if milestone.status in MILESTONE_TERMINAL_STATUSES:
+            return
+            # request.errors.add(
+            #     'body',
+            #     'status',
+            #     "Can\'t update milestone in current ({0}) status".format(milestone.status)
+            # )
+            # request.errors.status = 403
+            # raise error_handler(request)
+        # validation end
 
         # `notMet` handling
         if new_status == 'notMet' and milestone.status == 'processing':
@@ -68,21 +97,21 @@ class CeasefireMilestoneManager(object):
             milestone.__parent__.status = 'pending.unsuccessful'
 
         # handle patching `dueDate` of reporting milestone in `scheduled` status
-        patched_dueDate = request.json.get('data', {}).get('dueDate')
+        patched_dueDate = event.data.get('dueDate')
         if (
             patched_dueDate and
             milestone.status == 'scheduled' and
             milestone.type_ == 'reporting'
         ):
             new_dueDate = iso8601.parse_date(patched_dueDate)
-            self.validate_dueDate(request, new_dueDate)
+            self.validate_dueDate(event.ctx.high, new_dueDate)
             milestone.dueDate = new_dueDate
 
         # `dateMet` handling
-        patched_date_met_str = request.validated['data'].get('dateMet')
+        patched_date_met_str = milestone_upd.get('dateMet')
         if patched_date_met_str:
             new_dateMet = iso8601.parse_date(patched_date_met_str)
-            self.validate_dateMet(request, new_dateMet)
+            self.validate_dateMet(event.ctx.high, new_dateMet)
             self.choose_status(milestone, new_dateMet)
             milestone.dateMet = new_dateMet
             next_milestone = self.get_next_milestone(milestone)
@@ -238,13 +267,14 @@ class CeasefireMilestoneManager(object):
             request.errors.status = 422
             raise error_handler(request)
 
-    def validate_dueDate(self, request, dueDate):
-        approval_milestone = search_list_with_dicts(request.context.__parent__.milestones, 'type_', 'approval')
+    def validate_dueDate(self, contract, dueDate):
+        approval_milestone = search_list_with_dicts(contract.milestones, 'type_', 'approval')
         if approval_milestone.dueDate >= dueDate:
-            request.errors.add(
-                'body',
-                'dueDate',
-                'dueDate must be greater than dueDate of approval milestone'
-            )
-            request.errors.status = 422
-            raise error_handler(request)
+            return
+            # request.errors.add(
+            #     'body',
+            #     'dueDate',
+            #     'dueDate must be greater than dueDate of approval milestone'
+            # )
+            # request.errors.status = 422
+            # raise error_handler(request)

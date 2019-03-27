@@ -40,7 +40,6 @@ class CeasefireMilestoneResource(APIResource):
         content_type='application/json',
         validators=(validate_data_to_event,))
     def patch(self):
-        import ipdb; ipdb.set_trace()
         event = self.request.event
         md = ContractManagerDiscovery(self.request.registry.manager_registry)
         contract_manager = md.discover(event.ctx.high)
