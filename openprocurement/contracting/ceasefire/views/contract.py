@@ -6,6 +6,7 @@ from openprocurement.api.utils import (
     context_unpack,
     json_view,
 )
+from openprocurement.api.utils.error_management import handle_errors_on_view
 from openprocurement.contracting.core.utils import (
     apply_patch,
     contractingresource,
@@ -35,6 +36,7 @@ class CeasefireContractResource(APIResource):
     def get(self):
         return {'data': self.request.context.serialize("view")}
 
+    @handle_errors_on_view
     @json_view(
         permission='edit_contract',
         validators=(validate_data_to_event,)

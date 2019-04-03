@@ -3,6 +3,7 @@ from zope.interface import implementer
 
 from openprocurement.api.utils.data_engine import DataEngine
 from openprocurement.api.utils.ownership import OwnershipOperator
+from openprocurement.api.exceptions import CorniceErrors
 from openprocurement.contracting.core.interfaces import (
     IContractManager,
 )
@@ -55,10 +56,7 @@ class CeasefireContractManager(object):
         new_status = event.data.get('status')
         user_id = event.auth.user_id
         if not allowed_contract_status_changes(contract.status, new_status, user_id):
-            return None
-            # request.errors.add('body', 'status', 'Status change is not allowed.')
-            # request.errors.status = 403
-            # raise error_handler(request)
+            raise CorniceErrors(403, ('body', 'status', 'Status change is not allowed.'))
         # validation end
         contract_upd = self.de.apply_data_on_context(event)
         new_status = contract_upd.get('status')
