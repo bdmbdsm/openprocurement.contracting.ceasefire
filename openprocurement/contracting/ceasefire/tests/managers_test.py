@@ -30,6 +30,11 @@ from openprocurement.contracting.ceasefire.constants import (
     MILESTONE_REPORTING_DUEDATE_OFFSET_YEARS,
     MILESTONE_TYPES,
 )
+from openprocurement.contracting.ceasefire.tests.fixtures.helpers import (
+    prepare_contract_with_milestones,
+    prepare_contract,
+)
+from openprocurement.api.tests.fixtures.mocks import event_mock
 
 from .fixtures.data import contract_create_data
 
@@ -52,28 +57,24 @@ class CeasefireContractManagerTest(unittest.TestCase):
 
 class CeasefireMilestoneManagerTest(unittest.TestCase):
 
-    def prepare_mocked_contract(self):
-        self.contract = Contract(contract_create_data)
-        self.contract.validate()
-        self.mocked_event = Mock()
-        self.mocked_event.ctx.high = self.contract
-
     def test_create_milestones(self):
-        self.prepare_mocked_contract()
+        event = event_mock()
+        contract = prepare_contract()
+        contract.dateSigned = datetime.now()
+        event.ctx.high = contract
         manager = CeasefireMilestoneManager()
-        self.contract.dateSigned = datetime.now()
 
-        manager.create_milestones(self.mocked_event.ctx.high)
+        manager.create_milestones(event.ctx.high)
 
-        self.assertEqual(len(self.contract.milestones), 3, 'milestones were not created')
+        self.assertEqual(len(contract.milestones), 3, 'milestones were not created')
 
     def test_populate_milestones(self):
-        self.prepare_mocked_contract()
+        contract = prepare_contract()
         manager = CeasefireMilestoneManager()
 
-        self.contract.dateSigned = datetime.now()
+        contract.dateSigned = datetime.now()
 
-        milestones = manager.populate_milestones(self.contract)
+        milestones = manager.populate_milestones(contract)
 
         self.assertEqual(len(milestones), 3, '3 milestones must be generated')
         generated_types = [milestone.type_ for milestone in milestones]
@@ -177,7 +178,7 @@ class CeasefireMilestoneManagerTest(unittest.TestCase):
 
     def test_change_milestone_to_not_met(self):
         manager = CeasefireMilestoneManager()
-        mocked_request = Mock()
+        mocked_event = prepare_mocked_event()
 
         mocked_milestone = Mock()
         mocked_milestone.id = '1'
@@ -190,11 +191,12 @@ class CeasefireMilestoneManagerTest(unittest.TestCase):
         mocked_milestone.__parent__ = mocked_contract
         mocked_milestone.status = 'processing'
 
-        mocked_request.context = mocked_milestone
-        mocked_request.validated = {'data': {}}
-        mocked_request.json = {'data': {'status': 'notMet'}}
+        mocked_event.ctx.low = mocked_milestone
+        mocked_event.validated = {'data': {}}
+        mocked_event.data = {'status': 'notMet'}
 
-        manager.change_milestone(mocked_request)
+        import ipdb; ipdb.set_trace()
+        manager.change_milestone(mocked_event)
 
         self.assertEqual(mocked_milestone.status, 'notMet')
         self.assertEqual(mocked_contract.status, 'pending.unsuccessful')
