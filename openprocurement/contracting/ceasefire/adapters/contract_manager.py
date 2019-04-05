@@ -27,8 +27,21 @@ class CeasefireContractManager(object):
 
     def __init__(self):
         self.de = DataEngine()
+        self._create_accreditation = 5
+        self._edit_accreditation = 6
 
     def create_contract(self, event):
+        # validation
+        if self._create_accreditation not in event.auth.accreditations:
+            raise CorniceErrors(
+                403,
+                (
+                    'body',
+                    'accreditation',
+                    'Broker Accreditation level does not permit contract creation'
+                )
+            )
+        # validation end
         contract = self.de.create_model(event, Contract)
         self._add_documents_to_contract(contract, event.data)
 
@@ -53,7 +66,7 @@ class CeasefireContractManager(object):
     def change_contract(self, event):
         # validation
         contract = event.ctx.high
-        new_status = event.data.get('status')
+        new_status = event.data.get('status', contract.status)
         user_id = event.auth.user_id
         if not allowed_contract_status_changes(contract.status, new_status, user_id):
             raise CorniceErrors(403, ('body', 'status', 'Status change is not allowed.'))
