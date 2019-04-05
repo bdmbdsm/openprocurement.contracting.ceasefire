@@ -4,6 +4,7 @@ from zope.interface import implementer
 from openprocurement.api.utils.data_engine import DataEngine
 from openprocurement.api.utils.ownership import OwnershipOperator
 from openprocurement.api.exceptions import CorniceErrors
+from openprocurement.api.auth import is_accreditated
 from openprocurement.contracting.core.interfaces import (
     IContractManager,
 )
@@ -27,12 +28,12 @@ class CeasefireContractManager(object):
 
     def __init__(self):
         self.de = DataEngine()
-        self._create_accreditation = 5
-        self._edit_accreditation = 6
+        self._create_accreditations = (5,)
+        self._edit_accreditations = (6,)
 
     def create_contract(self, event):
         # validation
-        if self._create_accreditation not in event.auth.accreditations:
+        if not is_accreditated(event.auth.accreditations, self._create_accreditations):
             raise CorniceErrors(
                 403,
                 (
