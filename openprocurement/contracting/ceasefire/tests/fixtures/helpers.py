@@ -254,7 +254,7 @@ def prepare_contract():
 def prepare_contract_with_milestones():
     from openprocurement.contracting.ceasefire.adapters.milestone_manager import CeasefireMilestoneManager
 
-    contract = prepare_mocked_contract()
+    contract = prepare_contract()
     milestone_manager = CeasefireMilestoneManager()
     milestone_manager.create_milestones(contract)
 
